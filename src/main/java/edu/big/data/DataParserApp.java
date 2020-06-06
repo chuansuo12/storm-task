@@ -2,7 +2,6 @@ package edu.big.data;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.storm.Config;
-import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
 import org.apache.storm.kafka.spout.KafkaSpout;
 import org.apache.storm.kafka.spout.KafkaSpoutConfig;
@@ -10,10 +9,7 @@ import org.apache.storm.topology.TopologyBuilder;
 
 import java.util.UUID;
 
-/**
- * @author tengyj
- * @since 2020/6/6
- */
+
 public class DataParserApp {
     private static final String KAFKA_BOOTSTRAP_SERVER =
             "172.17.0.1:9092,172.17.0.1:9093,172.17.0.1:9094";
@@ -24,12 +20,12 @@ public class DataParserApp {
         TopologyBuilder builder = new TopologyBuilder();
         KafkaSpout<String, String> kafkaSpout = getKafkaSpout();
         builder.setSpout("user-behavior-spout", kafkaSpout);
-        builder.setBolt("save-data-bolt", new SaveDataBolt());
+        builder.setBolt("save-data-bolt", new SaveDataBolt()).shuffleGrouping("user-behavior-spout");
         Config conf = new Config();
         System.out.println("user behavior start.....");
-        //StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
-        LocalCluster cluster = new LocalCluster();
-        cluster.submitTopology("user_behavior_local", conf, builder.createTopology());
+        StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
+        //LocalCluster cluster = new LocalCluster();
+        //cluster.submitTopology("user_behavior_local", conf, builder.createTopology());
 
     }
 

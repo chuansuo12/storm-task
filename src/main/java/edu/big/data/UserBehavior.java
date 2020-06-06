@@ -4,10 +4,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 import java.time.LocalDateTime;
 
-/**
- * @author tengyj
- * @since 2020/6/6
- */
+
 public class UserBehavior {
     public static final byte[] UID_FILED = Bytes.toBytes("uid");
     public static final byte[] AID_FILE = Bytes.toBytes("aid");

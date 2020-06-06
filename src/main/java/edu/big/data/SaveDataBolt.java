@@ -1,6 +1,5 @@
 package edu.big.data;
 
-import groovy.util.logging.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
@@ -21,11 +20,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
-/**
- * @author tengyj
- * @since 2020/6/6
- */
-@Slf4j
+
 public class SaveDataBolt implements IRichBolt {
     private static final byte[] USER_INFO = Bytes.toBytes("user_info");
     private static final byte[] ARTICLE_INFO = Bytes.toBytes("article_info");
@@ -43,6 +38,7 @@ public class SaveDataBolt implements IRichBolt {
             TableName articleBehavior = TableName.valueOf("bigdata:article_behavior");
             this.userBehaviorTable = conn.getTable(userBehavior);
             this.articleBehaviorTable = conn.getTable(articleBehavior);
+	    System.out.println("connect hbase success!");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -50,12 +46,13 @@ public class SaveDataBolt implements IRichBolt {
 
     public void execute(Tuple tuple) {
         try {
+	    //System.out.println("execute...");
             UserBehavior userBehavior = getUserBehavior(tuple);
             Put userPut = this.getUserBehaviorPut(userBehavior);
             Put articlePut = this.getArticleBehaviorPut(userBehavior);
             userBehaviorTable.put(userPut);
             articleBehaviorTable.put(articlePut);
-            System.out.println("save success, uid:{" + userBehavior.getUid() + "}, aid:{" + userBehavior.getAid() + "}");
+            //System.out.println("save success, uid:{" + userBehavior.getUid() + "}, aid:{" + userBehavior.getAid() + "}");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -71,8 +68,8 @@ public class SaveDataBolt implements IRichBolt {
 
     private Put getArticleBehaviorPut(UserBehavior userBehavior) {
         Put put = new Put(Bytes.toBytes(userBehavior.getBehavior()));
-        put.addColumn(ARTICLE_INFO, UserBehavior.UID_FILED, Bytes.toBytes(userBehavior.getUid()));
-        put.addColumn(USER_INFO, UserBehavior.BEHAVIOR_FILED, Bytes.toBytes(userBehavior.getBehavior()));
+        put.addColumn(USER_INFO, UserBehavior.UID_FILED, Bytes.toBytes(userBehavior.getUid()));
+        put.addColumn(BEHAVIOR, UserBehavior.BEHAVIOR_FILED, Bytes.toBytes(userBehavior.getBehavior()));
         put.setTimestamp(userBehavior.getBehaviorTime().atZone(ZoneOffset.systemDefault()).toInstant().toEpochMilli());
         return put;
     }
