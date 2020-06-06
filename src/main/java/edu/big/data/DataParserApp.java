@@ -10,6 +10,8 @@ import org.apache.storm.kafka.spout.KafkaSpout;
 import org.apache.storm.kafka.spout.KafkaSpoutConfig;
 import org.apache.storm.topology.TopologyBuilder;
 
+import java.util.UUID;
+
 /**
  * @author tengyj
  * @since 2020/6/6
@@ -32,6 +34,7 @@ public class DataParserApp {
     private static KafkaSpout<String, String> getKafkaSpout() {
         KafkaSpoutConfig<String, String> kafkaSpoutConfig = KafkaSpoutConfig
                 .builder(KAFKA_BOOTSTRAP_SERVER, TOPIC)
+                .setProp(ConsumerConfig.CLIENT_ID_CONFIG, UUID.randomUUID().toString())
                 .setProp(ConsumerConfig.GROUP_ID_CONFIG, KAFKA_GROUP_ID)
                 .build();
         return new KafkaSpout<>(kafkaSpoutConfig);
