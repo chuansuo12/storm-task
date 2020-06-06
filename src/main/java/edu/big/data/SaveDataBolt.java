@@ -67,7 +67,7 @@ public class SaveDataBolt implements IRichBolt {
     }
 
     private Put getArticleBehaviorPut(UserBehavior userBehavior) {
-        Put put = new Put(Bytes.toBytes(userBehavior.getBehavior()));
+        Put put = new Put(Bytes.toBytes(userBehavior.getAid()));
         put.addColumn(USER_INFO, UserBehavior.UID_FILED, Bytes.toBytes(userBehavior.getUid()));
         put.addColumn(BEHAVIOR, UserBehavior.BEHAVIOR_FILED, Bytes.toBytes(userBehavior.getBehavior()));
         put.setTimestamp(userBehavior.getBehaviorTime().atZone(ZoneOffset.systemDefault()).toInstant().toEpochMilli());
