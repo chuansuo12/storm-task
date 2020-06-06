@@ -47,7 +47,7 @@ public class SaveDataBolt implements IRichBolt {
             this.userBehaviorTable = conn.getTable(userBehavior);
             this.articleBehaviorTable = conn.getTable(articleBehavior);
         } catch (Exception e) {
-            LOGGER.info("connect to hbase error!",e);
+            LOGGER.info("connect to hbase error!", e);
         }
     }
 
@@ -58,8 +58,9 @@ public class SaveDataBolt implements IRichBolt {
             Put articlePut = this.getArticleBehaviorPut(userBehavior);
             userBehaviorTable.put(userPut);
             articleBehaviorTable.put(articlePut);
+            LOGGER.info("save success, uid:{}, aid:{}", userBehavior.getUid(), userBehavior.getAid());
         } catch (IOException e) {
-            LOGGER.info("save to hbase error!",e);
+            LOGGER.info("save to hbase error!", e);
         }
     }
 
