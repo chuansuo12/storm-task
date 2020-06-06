@@ -14,8 +14,6 @@ import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -29,7 +27,6 @@ import java.util.Map;
  */
 @Slf4j
 public class SaveDataBolt implements IRichBolt {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SaveDataBolt.class);
     private static final byte[] USER_INFO = Bytes.toBytes("user_info");
     private static final byte[] ARTICLE_INFO = Bytes.toBytes("article_info");
     private static final byte[] BEHAVIOR = Bytes.toBytes("behavior");
@@ -47,7 +44,7 @@ public class SaveDataBolt implements IRichBolt {
             this.userBehaviorTable = conn.getTable(userBehavior);
             this.articleBehaviorTable = conn.getTable(articleBehavior);
         } catch (Exception e) {
-            LOGGER.info("connect to hbase error!", e);
+            e.printStackTrace();
         }
     }
 
@@ -58,9 +55,9 @@ public class SaveDataBolt implements IRichBolt {
             Put articlePut = this.getArticleBehaviorPut(userBehavior);
             userBehaviorTable.put(userPut);
             articleBehaviorTable.put(articlePut);
-            LOGGER.info("save success, uid:{}, aid:{}", userBehavior.getUid(), userBehavior.getAid());
+            System.out.println("save success, uid:{" + userBehavior.getUid() + "}, aid:{" + userBehavior.getAid() + "}");
         } catch (IOException e) {
-            LOGGER.info("save to hbase error!", e);
+            e.printStackTrace();
         }
     }
 

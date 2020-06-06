@@ -9,8 +9,6 @@ import org.apache.storm.generated.InvalidTopologyException;
 import org.apache.storm.kafka.spout.KafkaSpout;
 import org.apache.storm.kafka.spout.KafkaSpoutConfig;
 import org.apache.storm.topology.TopologyBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
@@ -19,7 +17,6 @@ import java.util.UUID;
  * @since 2020/6/6
  */
 public class DataParserApp {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataParserApp.class);
     private static final String KAFKA_BOOTSTRAP_SERVER =
             "172.17.0.1:9092,172.17.0.1:9093,172.17.0.1:9094";
     private static final String TOPIC = "user_behavior";
@@ -31,7 +28,7 @@ public class DataParserApp {
         builder.setSpout("user-behavior-spout", kafkaSpout);
         builder.setBolt("save-data-bolt", new SaveDataBolt());
         Config conf = new Config();
-        LOGGER.info("user behavior start.....");
+        System.out.println("user behavior start.....");
         StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
     }
 
