@@ -2,10 +2,8 @@ package edu.big.data;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.storm.Config;
+import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
-import org.apache.storm.generated.AlreadyAliveException;
-import org.apache.storm.generated.AuthorizationException;
-import org.apache.storm.generated.InvalidTopologyException;
 import org.apache.storm.kafka.spout.KafkaSpout;
 import org.apache.storm.kafka.spout.KafkaSpoutConfig;
 import org.apache.storm.topology.TopologyBuilder;
@@ -22,14 +20,17 @@ public class DataParserApp {
     private static final String TOPIC = "user_behavior";
     private static final String KAFKA_GROUP_ID = "storm";
 
-    public static void main(String[] args) throws InvalidTopologyException, AuthorizationException, AlreadyAliveException {
+    public static void main(String[] args) throws Exception {
         TopologyBuilder builder = new TopologyBuilder();
         KafkaSpout<String, String> kafkaSpout = getKafkaSpout();
         builder.setSpout("user-behavior-spout", kafkaSpout);
         builder.setBolt("save-data-bolt", new SaveDataBolt());
         Config conf = new Config();
         System.out.println("user behavior start.....");
-        StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
+        //StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
+        LocalCluster cluster = new LocalCluster();
+        cluster.submitTopology("user_behavior_local", conf, builder.createTopology());
+
     }
 
     private static KafkaSpout<String, String> getKafkaSpout() {
